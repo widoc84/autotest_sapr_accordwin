@@ -23,11 +23,17 @@
   <ItemGroup>
     <Compile Include="test2\test2_check_start_aced_and_acsetupx32.py" />
     <Compile Include="test2\test2_check_start_aced_and_acsetupx64.py" />
+    <Compile Include="test4\test4_prepare_base_for_diskr.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="testscript.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="C:\Users\tester\source\repos\autotest_sapr_accordwin\test2\" />
     <Folder Include="C:\Users\tester\source\repos\autotest_sapr_accordwin\test2\" />
+    <Folder Include="test4\" />
+    <Folder Include="test3\" />
+    <Folder Include="test2\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
