@@ -2,7 +2,9 @@ from pywinauto import Application
 import os
 import time
 import datetime
+from tkinter import *
 
+main = Tk()
 result = 1
 
 #Создание функций
@@ -18,6 +20,8 @@ def gettime():
     date = dt.strftime('%d/%m/%Y %H:%M:%S')
     return date
 
+def button_clicked():
+    sys.exit()
 
 #Получение даты
 day = datetime.datetime.now().day
@@ -39,31 +43,53 @@ f.write("Проверка началась в " + timestart + "\n\n")
 
 
 #Проверка запуска aced
+f.write("___Проверка aced32___\n")
 try:
     app = Application().start("C:\\Accord.x64\\Aced32.exe")
+    print("У вас есть 20 секунд для прохождения авторизации")
     app.window(best_match="ACED32 Редактор базы ", class_name='TMainForm').wait('visible',timeout=20)
     app.kill()
     print("Aced32 корректно открылся")
+    f.write("Aced32 корректно открылся\n\n")
 except:
     print("Aced32 не открылся")
+    f.write("Aced32 не открылся\n\n")
     app.kill()
     result = 0
 time.sleep(5)
 
 
 #Проверка запуска acsetup
+f.write("___Проверка acsetup___\n")
 try:
     app = Application().start("C:\\Accord.x64\\AcSetup.exe")
+    print("У вас есть 20 секунд для прохождения авторизации")
     app.window(best_match="Настройка Комплекс СЗИ НСД").wait('visible',timeout=20)
     app.kill()
     print("AcSetup корректно открылся")
+    f.write("AcSetup корректно открылся\n\n")
 except:
     print("AcSetup не открылся")
+    f.write("AcSetup не открылся\n\n")
     app.kill()
     result = 0
 
 
 #Завершение проверки
+if result == 1:
+    f.write("Итоговое тестирование завершилось успешно \n")
+    print ("В результате проверки ошибок не обнаружено")
+
+    button = Button(main,
+                        width=35, height=20, compound=CENTER,
+                        bg="green", command=button_clicked)
+else:
+    f.write("Итоговое тестирование завершилось неудачно \n")
+    print ("В результате проверки были обнаружены ошибки")
+    button = Button(main,
+                        width=35, height=20, compound=CENTER,
+                        bg="red", command=button_clicked)
+button.pack()
 datefinish = datetime.datetime.now()
 timefinish = gettime()
 f.write("Проверка завершилась в " + timefinish + "\n")
@@ -73,3 +99,4 @@ f.write("Общее время составило " + de + " секунд\n" )
 print("Общее время составило " + de + " секунд")
 f.write("_________________________________Конец записи лога_________________________________\n\n")
 f.close()
+main.mainloop()
