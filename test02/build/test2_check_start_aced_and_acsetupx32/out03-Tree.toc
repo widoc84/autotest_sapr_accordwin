@@ -1,0 +1,5 @@
+('C:\\Users\\tester\\source\\repos\\autotest_sapr_accordwin\\test2\\build\\test2_check_start_aced_and_acsetupx32\\pywinauto-0.6.0-py3.6.egg',
+ None,
+ {'*.pyo', '*.so', 'EGG-INFO', '*.pyc', '*.py', '*.pyd'},
+ 'DATA',
+ [])
