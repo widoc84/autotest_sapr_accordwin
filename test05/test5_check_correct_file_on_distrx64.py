@@ -68,7 +68,15 @@ except:
     result = 0
 
 #Начало установки клиента
-app = Application().start("C:\\in\\acc.exe")
+Application().start("C:\\in\\acc.exe")
+time.sleep(3)
+app = Application(backend='uia').connect(path="C:\\in\\acc.exe", title="Установка Комплекс ")
+app.window(handle=0x0059051C).click_input()#первое далее
+app.window(handle=0x0060068C).click_input()#принятие соглашения
+app.window(handle=0x00B909B6).click_input()#второе далее
+app.window(handle=0x001C0A38).click_input()#третье далее
+app.window(handle=0x002C092E).wait('visible',timeout=20)
+app.window(handle=0x002C092E).click_input()#нажатие на кнопку готово
 
 
 #Проверка acrun
