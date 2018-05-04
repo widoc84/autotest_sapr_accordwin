@@ -1,7 +1,9 @@
 from pywinauto import Application
+import pywinauto
 import time
 import os
 import datetime
+import winreg
 from win32api import GetFileVersionInfo, HIWORD, LOWORD
 from tkinter import *
 
@@ -67,16 +69,26 @@ except:
     print("ошибка получения информации из файла")
     result = 0
 
+
 #Начало установки клиента
-Application().start("C:\\in\\acc.exe")
-time.sleep(3)
-app = Application(backend='uia').connect(path="C:\\in\\acc.exe", title="Установка Комплекс ")
-app.window(handle=0x0059051C).click_input()#первое далее
-app.window(handle=0x0060068C).click_input()#принятие соглашения
-app.window(handle=0x00B909B6).click_input()#второе далее
-app.window(handle=0x001C0A38).click_input()#третье далее
-app.window(handle=0x002C092E).wait('visible',timeout=20)
-app.window(handle=0x002C092E).click_input()#нажатие на кнопку готово
+f.write("___Установка клиента___\n")
+try:
+    Application().start("C:\\in\\acc.exe")
+    time.sleep(1)
+    app = Application(backend='uia').connect(path="C:\\in\\acc.exe", title="Установка Комплекс ")
+    w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
+    app.window(handle=w_handle).child_window(title="Далее >", auto_id="587").click_input()#первое далее
+    w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
+    app.window(handle=w_handle).child_window(title="Я принимаю условия лицензионного соглашения", auto_id="47", control_type="RadioButton").click_input()#принятие соглашения
+    app.window(handle=w_handle).child_window(title="Далее >", auto_id="587", control_type="Button").click_input()#второе далее
+    w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
+    app.window(handle=w_handle).child_window(title="Далее >", auto_id="587", control_type="Button").click_input()#третье далее
+    time.sleep(12)
+    w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
+    app.window(handle=w_handle).child_window(title="Готово", auto_id="592", control_type="Button").click_input()#нажатие на кнопку готово
+except:
+	f.write("Завершение установки клиента\n\n")
+
 
 
 #Проверка acrun
@@ -103,6 +115,23 @@ else:
     f.write("Сверка acrun прошла неудачно\n\n")
     print("Сверка acrun прошла неудачно")
     result = 0
+
+#Проверка версии в реестре
+f.write("___Сверка версии в реестре___\n")
+try:
+    hKey = winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE, r'SOFTWARE\WOW6432Node\OKB SAPR\Accord')
+    regtemp = winreg.QueryValueEx(hKey,"Version")
+    verreg = regtemp[0]
+    f.write("Получена версия " + verreg + "\n")
+    if ver == verreg:
+        f.write("Сверка версий прошла успешно\n\n")
+    else:
+        f.write("Сверка версий прошла не удачно\n\n")
+        result = 0
+except:
+    f.write("Возникли проблемы при сверке версии\n\n")
+    result = 0
+    
 
 #Завершение работы
 if result == 1:
