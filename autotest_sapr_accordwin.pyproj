@@ -23,7 +23,7 @@
   <ItemGroup>
     <Compile Include="test02\test2_check_start_aced_and_acsetupx32.py" />
     <Compile Include="test02\test2_check_start_aced_and_acsetupx64.py" />
-    <Compile Include="test04\test4_prepare_base_for_diskr.py">
+    <Compile Include="test04\test4_prepare_base_for_diskrx64.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test05\test5_check_correct_file_on_distrx64.py">
