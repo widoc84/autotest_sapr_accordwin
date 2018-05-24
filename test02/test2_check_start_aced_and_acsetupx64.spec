@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['test2_check_start_aced_and_acsetupx64.py'],
-             pathex=['C:\\Users\\tester\\source\\repos\\autotest_sapr_accordwin\\test2'],
+             pathex=['C:\\Users\\tester\\source\\repos\\autotest_sapr_accordwin\\test02'],
              binaries=[],
              datas=[],
              hiddenimports=[],

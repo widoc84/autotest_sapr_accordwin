@@ -2,6 +2,8 @@ from pywinauto import Application
 import os
 import time
 import datetime
+import shutil
+import ftplib
 from tkinter import *
 
 main = Tk()
@@ -20,6 +22,90 @@ def gettime():
     date = dt.strftime('%d/%m/%Y %H:%M:%S')
     return date
 
+def createfile(attr):
+    os.mkdir("C:\\testuser\\file\\" + attr)
+    os.mkdir("C:\\testuser\\file\\" + attr + "\\On")
+    folder_to = "C:\\testuser\\file\\" + attr + "\\On"
+    for f in os.listdir(folder_from):
+        if os.path.isfile(os.path.join(folder_from, f)):
+            shutil.copy(os.path.join(folder_from, f), os.path.join(folder_to, f))
+        if os.path.isdir(os.path.join(folder_from, f)):
+            shutil.copytree(os.path.join(folder_from, f), os.path.join(folder_to, f))
+    os.mkdir("C:\\testuser\\file\\" + attr + "\\Off")
+    folder_to = "C:\\testuser\\file\\" + attr + "\\Off"
+    for f in os.listdir(folder_from):
+        if os.path.isfile(os.path.join(folder_from, f)):
+            shutil.copy(os.path.join(folder_from, f), os.path.join(folder_to, f))
+        if os.path.isdir(os.path.join(folder_from, f)):
+            shutil.copytree(os.path.join(folder_from, f), os.path.join(folder_to, f))
+
+def createfolder(attr):
+    i = 0
+    os.mkdir("C:\\testuser\\folder\\" + attr)
+    folder_on = "C:\\testuser\\folder\\" + attr + "\\On"
+    folder_off = "C:\\testuser\\folder\\" + attr + "\\Off"
+    os.mkdir(folder_on)
+    os.mkdir(folder_off)
+    while i < 9: 
+        istr = str(i)
+        folder_on_cr = folder_on + "\\Folder" + istr
+        folder_off_cr = folder_off + "\\Folder" + istr 
+        os.mkdir(folder_on_cr)
+        os.mkdir(folder_off_cr)
+        for f in os.listdir(folder_from):
+                shutil.copy(os.path.join(folder_from, f), os.path.join(folder_on_cr, f))
+                shutil.copy(os.path.join(folder_from, f), os.path.join(folder_off_cr, f))
+        i = i + 1
+
+def add_atribute_file(c, d, re, h, r, w, run, path, title):
+    try:
+        app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
+        app.TFDirsFiles.Edit.type_keys(path)
+        if h == 1:
+            app.TFDirsFiles.CheckBox9.click()#видимость
+        if c == 1:
+            app.TFDirsFiles.CheckBox12.click()#создание
+        if d == 1:
+            app.TFDirsFiles.CheckBox11.click()#удаление
+        if re == 1:
+            app.TFDirsFiles.CheckBox10.click()#переименование
+        if r == 1:
+            app.TFDirsFiles.CheckBox14.click()#чтение
+        if w == 1:
+            app.TFDirsFiles.CheckBox13.click()#запись
+        if run == 1:
+            app.TFDirsFiles.CheckBox1.click()#запуск
+        app.TFDirsFiles.Button2.click()#сохранить
+        app.TFDirsFiles.Button1.click()#закрыть
+        f.write("При настройке " + title + " для файла проблем не обнаружено\n")
+    except:
+        f.write("При настройке " + title + " для файла обнаружены проблемы\n")
+        print("При настройке " + title + " для файла обнаружены проблемы")
+        result  =   0
+        resultprd = 0 
+
+def add_atribute_folder(c, d, re, tr, run, path, title):
+    try:
+        app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
+        app.TFDirsFiles.Edit.type_keys(path)
+        if c == 1:
+            app.TFDirsFiles.CheckBox7.click()#создание
+        if d == 1:
+            app.TFDirsFiles.CheckBox6.click()#удаление
+        if re == 1:
+            app.TFDirsFiles.CheckBox4.click()#переименование    
+        if tr == 1:
+            app.TFDirsFiles.CheckBox5.click()#переход
+        if run == 1:
+            app.TFDirsFiles.CheckBox1.click()#запуск         
+        app.TFDirsFiles.Button2.click()#сохранить
+        app.TFDirsFiles.Button1.click()#закрыть
+        f.write("При настройке " + title + " для каталога проблем не обнаружено\n")
+    except:
+        f.write("При настройке " + title + " для каталога обнаружены проблемы\n")
+        print("При настройке " + title + " для каталога обнаружены проблемы")
+        result  =   0
+        resultprd = 0 
 def button_clicked():
     sys.exit()
 
@@ -53,49 +139,51 @@ else:
 f.write("___Получение данных из файла___\n")
 resultuser = 1
 
-try:#Блок создания Главного Администратора
-    app = Application().start("C:\\Accord.x64\\aced32.exe")
-    app.window(title=u'Aced32')[u"Да"].DoubleClick()
-    aced32 = app.window(best_match="TMainForm")
-    acedtree = aced32.TreeView
-    
-    i=0
-    admin_array=[]
-    try:
+#Блок создания Главного Администратора
+app = Application().start("C:\\Accord.x64\\aced32.exe")
+app.window(title=u'Aced32').wait('visible',timeout=3)
+app.window(title=u'Aced32')[u"Да"].DoubleClick()
+app.window(best_match="TMainForm").wait('visible',timeout=20)
+aced32 = app.window(best_match="TMainForm")
+acedtree = aced32.TreeView   
+i=0
+admin_array=[]
+try:
         while i < 20:
             name = acedtree.GetItem([0]).GetChild(i).Text()
             admin_array.append(name)
             i= i + 1
-    except:
+except:
         pass
 
-    admin_array.remove('Гл.Администратор')
-    for element in admin_array:
+admin_array.remove('Гл.Администратор')
+for element in admin_array:
         acedtree.GetItem([u'Администраторы',element]).Click()
         f.write("Удалёна запись администратора " + element + "\n")
         aced32.MenuItem(u"#1->#2").click()
         app.Dialog.child_window(best_match="Да").click()
 
-    i=0
-    user_array=[]
-    try:
+i=0
+user_array=[]
+try:
         while i < 20:
             name = acedtree.GetItem([1]).GetChild(i).Text()
             user_array.append(name)
             i= i + 1
-    except:
+except:
         pass
     
-    for element in user_array:
+for element in user_array:
         acedtree.GetItem([u'Обычные',element]).Click()
         f.write("Удалёна запись пользователя " + element + "\n")
         aced32.MenuItem(u"#1->#2").click()
         app.Dialog.child_window(best_match="Да").click()
-
+try:
     acedtree.GetItem([u'Администраторы',u'Гл.Администратор']).Click()
     aced32.TWinControl6.click()
     aced32key = app.window(best_match="Операции с ключом")
     aced32key.child_window(title="Далее >", class_name="TButton").click()
+    app.window(best_match="TMainForm").wait('active',timeout=22)
     aced32.TWinControl7.click()
     app.window(best_match="Ввод пароля").Edit2.type_keys("1qaz!QAZ")
     app.window(best_match="Ввод пароля").Edit.type_keys("1qaz!QAZ")
@@ -112,21 +200,24 @@ except:
 
 time.sleep(1)
 
-try:#Блок создания администратора
-    app = Application().start("C:\\Accord.x64\\aced32.exe")
-    app.Dialog.child_window(class_name="Edit").type_keys("1qaz!QAZ")
-    app.Dialog.OK.click()
-    print("У вас есть 20 секунд чтобы приложить идентификатор администратора")
-    time.sleep(20)
-    aced32 = app.window(best_match="TMainForm")
-    acedtree = aced32.TreeView
-    acedtree.GetItem([u'Администратор']).Click()
-    aced32.MenuItem(u"#1->#0").click()
-    app.window(best_match="TFCreate").Edit.type_keys("ADMIN")
-    app.window(best_match="TFCreate").OK.click()
+#Блок создания администратора
+app = Application().start("C:\\Accord.x64\\aced32.exe")
+app.Dialog.child_window(class_name="Edit").type_keys("1qaz!QAZ")
+app.Dialog.OK.click()
+print("Приложите идентификатор администратора")
+app.window(best_match="TMainForm").wait('visible',timeout=3)
+time.sleep(5)
+aced32 = app.window(best_match="TMainForm")
+acedtree = aced32.TreeView
+acedtree.GetItem([u'Администратор']).Click()
+aced32.MenuItem(u"#1->#0").click()
+app.window(best_match="TFCreate").Edit.type_keys("ADMIN")
+app.window(best_match="TFCreate").OK.click()
+try:
     aced32.TWinControl6.click()
     aced32key = app.window(best_match="Операции с ключом")
     aced32key.child_window(title="Далее >", class_name="TButton").click()
+    app.window(best_match="TMainForm").wait('active',timeout=22)
     aced32.TWinControl7.click()
     app.window(best_match="Ввод пароля").Edit2.type_keys("1qaz@WSX")
     app.window(best_match="Ввод пароля").Edit.type_keys("1qaz@WSX")
@@ -141,13 +232,14 @@ except:
 try:
     acedtree.GetItem([u'Обычные']).Click()
     aced32.MenuItem(u"#1->#0").click()
-    print("У вас есть 20 секунд чтобы приложить идентификатор пользователя")
-    time.sleep(20)
+    print("Приложите идентификатор пользователя")
+    time.sleep(5)
     app.window(best_match="TFCreate").Edit.type_keys("USER")
     app.window(best_match="TFCreate").OK.click()
     aced32.TWinControl6.click()
     aced32key = app.window(best_match="Операции с ключом")
     aced32key.child_window(title="Далее >", class_name="TButton").click()
+    app.window(best_match="TMainForm").wait('active',timeout=22)
     aced32.TWinControl7.click()
     app.window(best_match="Ввод пароля").Edit2.type_keys("1qaz@WSX")
     app.window(best_match="Ввод пароля").Edit.type_keys("1qaz@WSX")
@@ -168,248 +260,127 @@ else:
     f.write("При создании базы пользователей возникли проблемы\n\n")
     print("При создании базы пользователей возникли проблемы")
     result=0
-print("Смените идентификатор на идентификатор главного администратора у вас есть 20 секунд")
-time.sleep(20)
+
+print("Приложите идентификатор главного администратора")
+time.sleep(15)
 
 #Создание списка файлов
 f.write("___Создание списка файлов___\n")
+
+#Настройка FTP соеденения
+path = "temp\\test"
+ftp = ftplib.FTP('192.168.51.222')
+ftp.login('tester')
+ftp.cwd(path)
+filenames = ftp.nlst()
+
+if os.path.exists("C:\\testuser"):
+    shutil.rmtree("C:\\testuser")
+os.mkdir("C:\\testuser")
+os.mkdir('C:\\testuser\\temp') 
+folder_from = 'C:\\testuser\\temp'
+
+for filename in filenames:
+        host_file = os.path.join(
+            'C:\\testuser\\temp', filename
+        )
+    
+        try:
+            with open(host_file, 'wb') as local_file:
+                ftp.retrbinary('RETR ' + filename, local_file.write)
+        except ftplib.error_perm:
+            pass 
+ftp.quit()
+
 try:
-    os.mkdir("C:\\testuser")
     os.mkdir("C:\\testuser\\folder")
     os.mkdir("C:\\testuser\\file")
-    os.mkdir("C:\\testuser\\file\\create")
-    os.mkdir("C:\\testuser\\file\\delete")
-    os.mkdir("C:\\testuser\\file\\hidden")
-    os.mkdir("C:\\testuser\\file\\read")
-    os.mkdir("C:\\testuser\\file\\rename")
-    os.mkdir("C:\\testuser\\file\\write")
-    os.mkdir("C:\\testuser\\folder\\delete")
-    os.mkdir("C:\\testuser\\folder\\delete\\Folder1")
-    os.mkdir("C:\\testuser\\folder\\delete\\Folder2")
-    os.mkdir("C:\\testuser\\folder\\delete\\Folder3")
-    os.mkdir("C:\\testuser\\folder\\delete\\Folder4")
-    os.mkdir("C:\\testuser\\folder\\delete\\Folder5")
-    os.mkdir("C:\\testuser\\folder\\delete\\Folder6")
-    os.mkdir("C:\\testuser\\folder\\delete\\Folder7")
-    os.mkdir("C:\\testuser\\folder\\delete\\Folder8")
-    os.mkdir("C:\\testuser\\folder\\delete\\Folder9")
-    os.mkdir("C:\\testuser\\folder\\create\\Folder1")
-    os.mkdir("C:\\testuser\\folder\\create")
-    os.mkdir("C:\\testuser\\folder\\create\\Folder1")
-    os.mkdir("C:\\testuser\\folder\\programrun")
-    os.mkdir("C:\\testuser\\folder\\rename")
-    os.mkdir("C:\\testuser\\folder\\rename\\Folder1")
-    os.mkdir("C:\\testuser\\folder\\rename\\Folder2")
-    os.mkdir("C:\\testuser\\folder\\rename\\Folder3")
-    os.mkdir("C:\\testuser\\folder\\rename\\Folder4")
-    os.mkdir("C:\\testuser\\folder\\rename\\Folder5")
-    os.mkdir("C:\\testuser\\folder\\rename\\Folder6")
-    os.mkdir("C:\\testuser\\folder\\rename\\Folder7")
-    os.mkdir("C:\\testuser\\folder\\rename\\Folder8")
-    os.mkdir("C:\\testuser\\folder\\rename\\Folder9")
-    os.mkdir("C:\\testuser\\folder\\transition")
-    os.mkdir("C:\\testuser\\folder\\transition\\Folder1")
-    os.mkdir("C:\\testuser\\folder\\transition\\Folder2")
-    os.mkdir("C:\\testuser\\folder\\transition\\Folder3")
-    os.mkdir("C:\\testuser\\folder\\transition\\Folder4")
-    os.mkdir("C:\\testuser\\folder\\transition\\Folder5")
-    os.mkdir("C:\\testuser\\folder\\transition\\Folder6")
-    os.mkdir("C:\\testuser\\folder\\transition\\Folder7")
-    os.mkdir("C:\\testuser\\folder\\transition\\Folder8")
-    os.mkdir("C:\\testuser\\folder\\transition\\Folder9")
-    f.write("При создании списка файлов проблемы не возникли\n\n")
+    createfile('create')
+    createfile('delete')
+    createfile('read')
+    createfile('rename')
+    createfile('write')
+    createfile('hidden')
+    createfile('run')
+    createfolder('create')
+    createfolder('run')
+    createfolder('rename')
+    createfolder('transition')
+    createfolder('delete')
+    f.write("Файлы были созданы успешно\n")
 except:
-    f.write("При создании списка файлов возникли проблемы\n\n")
-    print("При создании списка файлов возникли проблемы")
-    result=0
-
+    f.write("Возникла проблема при создании файлов\n")
+    print("Возникла проблема при создании файлов")
+    result = 0
 
 #Настройка ПРД пользователя
 f.write("___Настройка ПРД___\n")
+resultprd = 1
+app = Application().start("C:\\Accord.x64\\aced32.exe")
+time.sleep(2)
+app.Dialog.child_window(class_name="Edit").type_keys("1qaz!QAZ")
+app.Dialog.OK.click()
+aced32 = app.window(best_match="TMainForm")
+acedtree = aced32.TreeView
+acedtree.GetItem([u'Обычные',u'USER']).Click()
+aced32.TWinControl3.click()
 
-try:
-    app = Application().start("C:\\Accord.x64\\aced32.exe")
-    app.Dialog.child_window(class_name="Edit").type_keys("1qaz!QAZ")
-    app.Dialog.OK.click()
-    aced32 = app.window(best_match="TMainForm")
-    acedtree = aced32.TreeView
-    acedtree.GetItem([u'Обычные',u'USER']).Click()
-    aced32.TWinControl3.click()
-    f.write("При запуске окна атрибутов проблем не обнаружено\n")
-except:
-    f.write("При запуске окна атрибутов обнаружены проблемы\n")
-    print("При запуске окна атрибутов обнаружены проблемы")
-    result=0
 
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\file\\create")
-    app.TFDirsFiles.CheckBox9.click()#видимость
-    app.TFDirsFiles.CheckBox10.click()#переименование
-    app.TFDirsFiles.CheckBox11.click()#удаление
-    app.TFDirsFiles.CheckBox14.click()#чтение
-    app.TFDirsFiles.CheckBox13.click()#запись
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов создания проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов создания обнаружены проблемы\n")
-    print("При настройке атрибутов создания обнаружены проблемы")
-    result=0
+add_atribute_file(c=1, d=0, re=0, h=0, r=0, w=0, run=0, path='C:\\testuser\\file\\create\\On\\', 
+                  title='разрешение создания')
+add_atribute_file(c=0, d=1, re=1, h=1, r=1, w=1, run=1, path = 'C:\\testuser\\file\\create\\Off\\', 
+                  title='запрещение создания')
+add_atribute_file(c=0, d=1, re=0, h=0, r=0, w=0, run=0, path='C:\\testuser\\file\\delete\\On\\', 
+                  title='разрешение удаления')
+add_atribute_file(c=1, d=0, re=1, h=1, r=1, w=1, run=1, path = 'C:\\testuser\\file\\delete\\Off\\', 
+                  title='запрещение удаления')
+add_atribute_file(c=0, d=0, re=1, h=0, r=0, w=0, run=0, path='C:\\testuser\\file\\rename\\On\\', 
+                  title='разрешение переименования')
+add_atribute_file(c=1, d=1, re=0, h=1, r=1, w=1, run=1, path = 'C:\\testuser\\file\\rename\\Off\\', 
+                  title='запрещение переименования')
+add_atribute_file(c=0, d=0, re=0, h=1, r=0, w=0, run=0, path='C:\\testuser\\file\\hidden\\On\\', 
+                  title='разрешение видимости')
+add_atribute_file(c=1, d=1, re=1, h=0, r=1, w=1, run=1, path = 'C:\\testuser\\file\\hidden\\Off\\', 
+                  title='запрещение видимости')
+add_atribute_file(c=0, d=0, re=0, h=0, r=1, w=0, run=0, path='C:\\testuser\\file\\read\\On\\', 
+                  title='разрешение чтения')
+add_atribute_file(c=1, d=1, re=1, h=1, r=0, w=1, run=1, path = 'C:\\testuser\\file\\read\\Off\\', 
+                  title='запрещение чтения')
+add_atribute_file(c=0, d=0, re=0, h=0, r=0, w=1, run=0, path='C:\\testuser\\file\\write\\On\\', 
+                  title='разрешение записи')
+add_atribute_file(c=1, d=1, re=1, h=1, r=1, w=0, run=1, path = 'C:\\testuser\\file\\write\\Off\\', 
+                  title='запрещение записи')
+add_atribute_file(c=0, d=0, re=0, h=0, r=0, w=0, run=1, path='C:\\testuser\\file\\run\\On\\', 
+                  title='разрешение запуска')
+add_atribute_file(c=1, d=1, re=1, h=1, r=1, w=1, run=0, path = 'C:\\testuser\\file\\run\\Off\\', 
+                  title='запрещение запуска')
 
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\file\\delete")
-    app.TFDirsFiles.CheckBox12.click()#создание
-    app.TFDirsFiles.CheckBox9.click()#видимость
-    app.TFDirsFiles.CheckBox10.click()#переименование
-    app.TFDirsFiles.CheckBox14.click()#чтение
-    app.TFDirsFiles.CheckBox13.click()#запись
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов удаления проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов удаления обнаружены проблемы\n")
-    print("При настройке атрибутов удаления обнаружены проблемы")
-    result=0
+add_atribute_folder(c=1, d=0, re=0, tr=0, run=0, path='C:\\testuser\\folder\\create\\On\\', 
+                  title='разрешение создания')
+add_atribute_folder(c=0, d=1, re=1, tr=1, run=1, path='C:\\testuser\\folder\\create\\Off\\', 
+                  title='запрещение создания')
+add_atribute_folder(c=0, d=1, re=0, tr=0, run=0, path='C:\\testuser\\folder\\delete\\On\\', 
+                  title='разрешение удаления')
+add_atribute_folder(c=1, d=0, re=1, tr=1, run=1, path='C:\\testuser\\folder\\delete\\Off\\', 
+                  title='запрещение удаления')
+add_atribute_folder(c=0, d=0, re=1, tr=0, run=0, path='C:\\testuser\\folder\\rename\\On\\', 
+                  title='разрешение переименования')
+add_atribute_folder(c=1, d=1, re=0, tr=1, run=1, path='C:\\testuser\\folder\\rename\\Off\\', 
+                  title='запрещение переименования')
+add_atribute_folder(c=0, d=0, re=0, tr=1, run=0, path='C:\\testuser\\folder\\transition\\On\\', 
+                  title='разрешение перехода')
+add_atribute_folder(c=1, d=1, re=1, tr=0, run=1, path='C:\\testuser\\folder\\transition\\Off\\', 
+                  title='запрещение перехода')
+add_atribute_folder(c=0, d=0, re=0, tr=0, run=1, path='C:\\testuser\\folder\\run\\On\\', 
+                  title='разрешение запуска')
+add_atribute_folder(c=1, d=1, re=1, tr=1, run=0, path='C:\\testuser\\folder\\run\\Off\\', 
+                  title='запрещение запуска')
 
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\file\\hidden")
-    app.TFDirsFiles.CheckBox12.click()#создание
-    app.TFDirsFiles.CheckBox10.click()#переименование
-    app.TFDirsFiles.CheckBox11.click()#удаление
-    app.TFDirsFiles.CheckBox14.click()#чтение
-    app.TFDirsFiles.CheckBox13.click()#запись
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов видимости проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов видимости обнаружены проблемы\n")
-    print("При настройке атрибутов видимости обнаружены проблемы")
-    result=0
-
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\file\\read")
-    app.TFDirsFiles.CheckBox12.click()#создание
-    app.TFDirsFiles.CheckBox9.click()#видимость
-    app.TFDirsFiles.CheckBox10.click()#переименование
-    app.TFDirsFiles.CheckBox11.click()#удаление
-    app.TFDirsFiles.CheckBox13.click()#запись
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов чтения проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов чтения обнаружены проблемы\n")
-    print("При настройке атрибутов чтения обнаружены проблемы")
-    result=0
-
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\file\\rename")
-    app.TFDirsFiles.CheckBox12.click()#создание
-    app.TFDirsFiles.CheckBox9.click()#видимость
-    app.TFDirsFiles.CheckBox11.click()#удаление
-    app.TFDirsFiles.CheckBox14.click()#чтение
-    app.TFDirsFiles.CheckBox13.click()#запись
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов переименования проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов переименования обнаружены проблемы\n")
-    print("При настройке атрибутов переименования обнаружены проблемы")
-    result=0
-
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\file\\write")
-    app.TFDirsFiles.CheckBox12.click()#создание
-    app.TFDirsFiles.CheckBox9.click()#видимость
-    app.TFDirsFiles.CheckBox10.click()#переименование
-    app.TFDirsFiles.CheckBox11.click()#удаление
-    app.TFDirsFiles.CheckBox14.click()#чтение
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов записи проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов записи обнаружены проблемы\n")
-    print("При настройке атрибутов записи обнаружены проблемы")
-    result=0
-
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\folder\\create")
-    app.TFDirsFiles.CheckBox6.click()#удаление
-    app.TFDirsFiles.CheckBox5.click()#переход
-    app.TFDirsFiles.CheckBox4.click()#переименование
-    app.TFDirsFiles.CheckBox1.click()#запуск
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов создания на каталог проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов создания на каталог обнаружены проблемы\n")
-    print("При настройке атрибутов создания на каталог обнаружены проблемы")
-    result=0
-
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\folder\\delete")
-    app.TFDirsFiles.CheckBox7.click()#создание
-    app.TFDirsFiles.CheckBox5.click()#переход
-    app.TFDirsFiles.CheckBox4.click()#переименование
-    app.TFDirsFiles.CheckBox1.click()#запуск
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов удаление на каталог проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов удаление на каталог обнаружены проблемы\n")
-    print("При настройке атрибутов удаление на каталог обнаружены проблемы")
-    result=0
-
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\folder\\rename")
-    app.TFDirsFiles.CheckBox7.click()#создание
-    app.TFDirsFiles.CheckBox6.click()#удаление
-    app.TFDirsFiles.CheckBox5.click()#переход
-    app.TFDirsFiles.CheckBox1.click()#запуск
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов переименование на каталог проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов переименование на каталог обнаружены проблемы\n")
-    print("При настройке атрибутов переименование на каталог обнаружены проблемы")
-    result=0
-
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\folder\\transition")
-    app.TFDirsFiles.CheckBox7.click()#создание
-    app.TFDirsFiles.CheckBox6.click()#удаление
-    app.TFDirsFiles.CheckBox4.click()#переименование
-    app.TFDirsFiles.CheckBox1.click()#запуск
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов переход на каталог проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов переход на каталог обнаружены проблемы\n")
-    print("При настройке атрибутов переход на каталог обнаружены проблемы")
-    result=0
-
-try:
-    app.window(best_match="Редактирование правил доступа ").child_window(title="Новый").click()
-    app.TFDirsFiles.Edit.type_keys("C:\\testuser\\folder\\programrun")
-    app.TFDirsFiles.CheckBox7.click()#создание
-    app.TFDirsFiles.CheckBox6.click()#удаление
-    app.TFDirsFiles.CheckBox5.click()#переход
-    app.TFDirsFiles.CheckBox4.click()#переименование
-    app.TFDirsFiles.Button2.click()#сохранить
-    app.TFDirsFiles.Button1.click()#закрыть
-    f.write("При настройке атрибутов запуск на каталог проблем не обнаружено\n")
-except:
-    f.write("При настройке атрибутов запуск на каталог обнаружены проблемы\n")
-    print("При настройке атрибутов запуск на каталог обнаружены проблемы")
+if resultprd == 1:
+    f.write("При создании ПРД проблем не обнаружено\n\n")
+else:
+    f.write("При создании ПРД обнаружены проблемы\n\n")
+    print("При создании ПРД обнаружены проблемы")
     result=0
 
 app.window(best_match="Редактирование правил доступа ").child_window(title="Сохранить").click()
@@ -418,12 +389,29 @@ app.window(best_match="TMainForm").MenuItem(u"#0->#3").click()
 app.window(best_match="TFMsgBox").child_window(best_match="Да").click()
 app.window(best_match="TMainForm").MenuItem(u"#0->#10").click()
 
+#Завершение работы
+if result == 1:
+    f.write("Итоговое тестирование завершилось успешно \n")
+    print ("В результате проверки ошибок не обнаружено")
+
+    button = Button(main,
+                        width=35, height=20, compound=CENTER,
+                        bg="green", command=button_clicked)
+else:
+    f.write("Итоговое тестирование завершилось неудачно \n")
+    print ("В результате проверки были обнаружены ошибки")
+    button = Button(main,
+                        width=35, height=20, compound=CENTER,
+                        bg="red", command=button_clicked)
+
 datefinish = datetime.datetime.now()
 timefinish = gettime()
 f.write("Проверка завершилась в " + timefinish + "\n")
 de = datefinish - datestart
 de = str(de.seconds)
+button.pack()
 f.write("Общее время составило " + de + " секунд\n" )
 print("Общее время составило " + de + " секунд")
 f.write("_________________________________Конец записи лога_________________________________\n\n")
 f.close()
+main.mainloop()

@@ -72,22 +72,24 @@ except:
 
 #Начало установки клиента
 f.write("___Установка клиента___\n")
-try:
-    Application().start("C:\\in\\acc.exe")
-    time.sleep(1)
-    app = Application(backend='uia').connect(path="C:\\in\\acc.exe", title="Установка Комплекс ")
+Application().start("C:\\in\\acc.exe")
+time.sleep(1)
+app = Application(backend='uia').connect(path="C:\\in\\acc.exe", title="Установка Комплекс ")
+w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
+app.window(handle=w_handle).child_window(title="Далее >", auto_id="587").click_input()#первое далее
+w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
+app.window(handle=w_handle).child_window(title="Я принимаю условия лицензионного соглашения", auto_id="47", control_type="RadioButton").click_input()#принятие соглашения
+app.window(handle=w_handle).child_window(title="Далее >", auto_id="587", control_type="Button").click_input()#второе далее
+w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
+app.window(handle=w_handle).child_window(title="Далее >", auto_id="587", control_type="Button").click_input()#третье далее
+time.sleep(1)
+start_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
+w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
+while start_handle==w_handle:
     w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
-    app.window(handle=w_handle).child_window(title="Далее >", auto_id="587").click_input()#первое далее
-    w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
-    app.window(handle=w_handle).child_window(title="Я принимаю условия лицензионного соглашения", auto_id="47", control_type="RadioButton").click_input()#принятие соглашения
-    app.window(handle=w_handle).child_window(title="Далее >", auto_id="587", control_type="Button").click_input()#второе далее
-    w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
-    app.window(handle=w_handle).child_window(title="Далее >", auto_id="587", control_type="Button").click_input()#третье далее
-    time.sleep(12)
-    w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
-    app.window(handle=w_handle).child_window(title="Готово", auto_id="592", control_type="Button").click_input()#нажатие на кнопку готово
-except:
-	f.write("Завершение установки клиента\n\n")
+w_handle = pywinauto.findwindows.find_windows(best_match="Установка Комплекс")[0]
+app.window(handle=w_handle).child_window(title="Готово", auto_id="592", control_type="Button").click_input()#нажатие на кнопку готово
+f.write("Завершение установки клиента\n\n")
 
 
 

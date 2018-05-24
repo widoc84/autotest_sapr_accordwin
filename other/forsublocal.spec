@@ -3,8 +3,8 @@
 block_cipher = None
 
 
-a = Analysis(['test2_check_start_aced_and_acsetupx32.py'],
-             pathex=['C:\\Users\\tester\\source\\repos\\autotest_sapr_accordwin\\test02'],
+a = Analysis(['forsublocal.py'],
+             pathex=['C:\\Users\\tester\\source\\repos\\autotest_sapr_accordwin\\other'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -21,8 +21,8 @@ exe = EXE(pyz,
           a.binaries,
           a.zipfiles,
           a.datas,
-          name='test2_check_start_aced_and_acsetupx32',
-          debug=False,
+          name='forsublocal',
+          debug=True,
           strip=False,
           upx=True,
           runtime_tmpdir=None,

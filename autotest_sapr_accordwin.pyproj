@@ -21,9 +21,24 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="test02\test2_check_start_aced_and_acsetupx32.py" />
+    <Compile Include="other\forsub.pyw" />
+    <Compile Include="other\forsublocal.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="other\setup.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="other\test.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test02\test2_check_start_aced_and_acsetupx64.py" />
+    <Compile Include="test03\test3_check_convert_base.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="test04\test4_prepare_base_for_diskrx64.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="test05\setup.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="test05\test5_check_correct_file_on_distrx64.py">
@@ -38,6 +53,7 @@
     <Folder Include="C:\Users\tester\source\repos\autotest_sapr_accordwin\test04\" />
     <Folder Include="C:\Users\tester\source\repos\autotest_sapr_accordwin\test03\" />
     <Folder Include="C:\Users\tester\source\repos\autotest_sapr_accordwin\test02\" />
+    <Folder Include="other\" />
     <Folder Include="test02\" />
     <Folder Include="test03\" />
     <Folder Include="test04\" />
