@@ -36,14 +36,14 @@ date = dt.strftime("%d%m_%H%M")
 #
 path = "c:\\testlog\\test2_" + date  + ".txt"
 f = open(path, "tw", encoding='utf-8')
-f.write("_________________________________Начало записи лога_________________________________\n\n")
+f.write("_________________________________Start_________________________________\n\n")
 datestart = datetime.datetime.now()
 timestart = gettime()
-f.write("Проверка началась в " + timestart + "\n\n")
+f.write("Start " + timestart + "\n\n")
 
 
 #
-f.write("___Проверка aced32___\n")
+f.write("___check aced32___\n")
 try:
     app = Application().start("C:\\Accord.x64\\Aced32.exe")
     print("20 sec")
