@@ -7,7 +7,7 @@ from tkinter import *
 main = Tk()
 result = 1
 
-#Создание функций
+#
 def gettime():
     day = datetime.datetime.now().day
     month = datetime.datetime.now().month
@@ -23,7 +23,7 @@ def gettime():
 def button_clicked():
     sys.exit()
 
-#Получение даты
+#
 day = datetime.datetime.now().day
 month = datetime.datetime.now().month
 hour = datetime.datetime.now().hour
@@ -33,7 +33,7 @@ dt = datetime.datetime.strptime(date, "%d%m_%H%M")
 date = dt.strftime("%d%m_%H%M")
 
 
-#Создание и старт записи в файл
+#
 path = "c:\\testlog\\test2_" + date  + ".txt"
 f = open(path, "tw", encoding='utf-8')
 f.write("_________________________________Начало записи лога_________________________________\n\n")
@@ -42,11 +42,11 @@ timestart = gettime()
 f.write("Проверка началась в " + timestart + "\n\n")
 
 
-#Проверка запуска aced
+#
 f.write("___Проверка aced32___\n")
 try:
     app = Application().start("C:\\Accord.x64\\Aced32.exe")
-    print("У вас есть 20 секунд для прохождения авторизации")
+    print("20 sec")
     app.window(best_match="ACED32 Редактор базы ", class_name='TMainForm').wait('visible',timeout=20)
     app.kill()
     print("Aced32 корректно открылся")
