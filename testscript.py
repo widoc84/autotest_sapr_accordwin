@@ -1,10 +1,10 @@
-from pywinauto import Application
+import pywinauto
 import os
 import time
 import datetime
 
 try:
-    app = Application().start("C:\\Accord.x64\\Aced32.exe")
+    app = pywinauto.Application().start("C:\\Accord.x64\\Aced32.exe")
     print("20 sec")
     app.window(best_match="ACED32 Редактор базы ", class_name='TMainForm').wait('visible',timeout=20)
     app.kill()
