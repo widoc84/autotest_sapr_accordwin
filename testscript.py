@@ -1,3 +1,3 @@
 import os
 
-os.mkdir("C:\\test")
+os.lisdir("C:\\")
